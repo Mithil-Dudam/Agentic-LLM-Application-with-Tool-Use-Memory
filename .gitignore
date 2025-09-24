@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+
+# VSCode
+.vscode/
+
+# Node
+node_modules/
+app_ui/node_modules/
+
+# Build
+app_ui/dist/
+app_ui/.next/
+app_ui/.turbo/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Chroma DB
+/db/chroma_langchain_db/
+
+# Misc
+*.swp
+*.bak
+*.tmp
