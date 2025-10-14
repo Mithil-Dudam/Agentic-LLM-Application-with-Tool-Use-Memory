@@ -7,7 +7,7 @@ A full-stack, agentic LLM application featuring advanced tool-use, in-session me
 ## Features
 
 - **Agentic LLM Backend**: Python FastAPI server using LangChain, LangGraph, and Ollama for LLM orchestration and tool chaining.
-- **Tool-Use & Function Calling**: Supports file I/O, calculator, web search, stock price, news headlines and weather tools.
+- **Tool-Use & Function Calling**: Supports file I/O, calculator, web search, stock price, news headlines, weather, and currency conversion tools.
 - **Multi-Step Planning**: Handles complex, multi-tool queries and can return structured JSON outputs for downstream consumption.
 - **Memory**: Maintains in-session conversation history; easily extendable to persistent vector DB (Chroma).
 - **Modern UI**: React + Vite + Tailwind CSS frontend with avatars, markdown rendering, and mobile-friendly design.
@@ -19,7 +19,7 @@ A full-stack, agentic LLM application featuring advanced tool-use, in-session me
 
 - **Backend**: Python, FastAPI, LangChain, LangGraph, Ollama
 - **Frontend**: React, TypeScript, Vite, Tailwind CSS
-- **APIs**: Alpha Vantage (stocks), NewsAPI (news), Open-Meteo (weather), SerpApi(search)
+- **APIs**: Alpha Vantage (stocks), NewsAPI (news), Open-Meteo (weather), Google Custom Search (web)
 
 ---
 
@@ -35,6 +35,10 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
+- The backend runs on `http://localhost:8000`
+- Requires a `.env` file with API keys:
+  - `ALPHA_VANTAGE_KEY`, `NEWSAPI_KEY`, `GOOGLE_CUSTOM_SEARCH_API_KEY`, `SEARCH_ENGINE_ID`
+
 ### 2. Frontend (React)
 
 ```bash
@@ -43,8 +47,7 @@ npm install
 npm run dev
 ```
 
-- The frontend runs on `localhost:5173` (default Vite port)
-- The backend runs on `localhost:8000`
+- The frontend runs on `http://localhost:5173` (default Vite port)
 
 ---
 
@@ -56,39 +59,51 @@ npm run dev
   - `Get the latest news about Apple as JSON.`
   - `Calculate 2 * (3 + 4)`
   - `List files in the current directory.`
+  - `Convert 100 USD to EUR and GBP.`
 - The assistant can chain tools and return structured JSON if requested.
 - Stock prices use Alpha Vantage (free, but rate-limited; always in USD).
-- News headlines use NewsAPI (reliable, global sources).
-- Web searches use SerpApi (real-time Google results).
+- News headlines use NewsAPI (free tier is rate-limited; requires API key).
+- Weather data uses Open-Meteo (no API key required; free and open).
+- Web search uses Google Custom Search (requires API key and search engine ID; subject to quota and billing).
+- All tool calls are logged in the backend for debugging.
+
+---
+
+## Backend Endpoints
+
+- `POST /chat` — Main chat endpoint. Request body:
+  ```json
+  {
+    "message": "Your question or command",
+    "structured_output": false
+  }
+  ```
+  Returns: `{ "response": ... }`
+
+---
+
+## Frontend Highlights
+
+- Modern, mobile-friendly chat UI (React, Tailwind)
+- Markdown rendering with code highlighting
+- Avatars for user and assistant
+- Error handling for failed API calls
 
 ---
 
 ## Environment Variables
 
-Create a `.env` file in your project root:
+Create a `.env` file in the root directory with:
 
 ```
 ALPHA_VANTAGE_KEY=your_alpha_vantage_key
 NEWSAPI_KEY=your_newsapi_key
-SERPAPI_KEY=your_serpapi_key
+GOOGLE_CUSTOM_SEARCH_API_KEY=your_google_key
+SEARCH_ENGINE_ID=your_search_engine_id
 ```
-
-## Customization & Extensibility
-
-- Add new tools by defining Python functions and registering them in `main.py`.
-- To enable persistent/semantic memory, connect Chroma or another vector DB.
-- UI is fully customizable with Tailwind CSS and React components.
-
----
-
-## Error Handling & Rate Limits
-
-- The assistant gracefully handles API rate limits and errors for web search (SerpAPI), stock prices (Alpha Vantage), and news headlines (NewsAPI).
-- If a rate limit is exceeded or an API returns an error, you will receive a clear, user-friendly message (e.g., "Rate limit exceeded, please try again later").
-- This ensures robust, production-quality behavior and a better user experience.
 
 ---
 
 ## License
 
-MIT License.
+MIT

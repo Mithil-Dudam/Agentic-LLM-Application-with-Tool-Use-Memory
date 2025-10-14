@@ -13,7 +13,8 @@ from langgraph.prebuilt import create_react_agent
 load_dotenv()
 ALPHA_VANTAGE_KEY = os.getenv("ALPHA_VANTAGE_KEY")
 NEWSAPI_KEY = os.getenv("NEWSAPI_KEY")
-SERPAPI_KEY = os.getenv("SERPAPI_KEY")
+GOOGLE_CUSTOM_SEARCH_API_KEY = os.getenv("GOOGLE_CUSTOM_SEARCH_API_KEY")
+SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
 
 app = FastAPI()
 app.add_middleware(
@@ -92,35 +93,24 @@ def calculator(expression: str) -> str:
         return f"Error: {e}"
 
 
-def web_search(query: str) -> str:
-    """Performs a web search and returns the top result summary."""
-    print(f"[TOOL LOG] web_search called with: {query}")
-    try:
-        url = f"https://serpapi.com/search.json?q={urllib.parse.quote(query)}&api_key={SERPAPI_KEY}"
-        resp = requests.get(url, timeout=10)
-        if resp.status_code == 429:
-            return "Error: SerpAPI rate limit exceeded. Please try again later."
-        if resp.status_code != 200:
-            return f"Error: SerpAPI returned status {resp.status_code}."
-        data = resp.json()
-        if "error" in data:
-            err_msg = data.get("error")
-            if "rate limit" in err_msg.lower():
-                return "Error: SerpAPI rate limit exceeded. Please try again later."
-            return f"Error: SerpAPI error: {err_msg}"
-        results = data.get("organic_results", [])
-        if results:
-            return (
-                results[0].get("snippet") or results[0].get("title") or str(results[0])
-            )
-        answer_box = data.get("answer_box")
-        if answer_box:
-            return (
-                answer_box.get("answer") or answer_box.get("snippet") or str(answer_box)
-            )
-        return "No relevant results found."
-    except Exception as e:
-        return f"Error: {e}"
+def search_the_web(query: str):
+    """Searches the web for the given query and returns a list of results with title, link, and snippet."""
+    url = "https://www.googleapis.com/customsearch/v1?"
+    params = {"q": query, "key": GOOGLE_CUSTOM_SEARCH_API_KEY, "cx": SEARCH_ENGINE_ID}
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+    results = response.json()
+    items = results.get("items", [])
+    output = []
+    for item in items:
+        output.append(
+            {
+                "title": item.get("title"),
+                "link": item.get("link"),
+                "snippet": item.get("snippet"),
+            }
+        )
+    return output
 
 
 def get_stock_price(symbol: str, structured_output: bool = False):
@@ -242,6 +232,31 @@ def get_weather(city: str, structured_output: bool = False):
         return {"city": city, "error": str(e)} if structured_output else f"Error: {e}"
 
 
+def currency_converter(amount: float, base: str, target) -> dict:
+    """Converts an amount from base currency to target currencies."""
+    if isinstance(target, str):
+        target = [target]
+    url = "https://api.frankfurter.dev/v1/latest?base=USD&currencies"
+    response = requests.get(url)
+    currencies = list(response.json()["rates"].keys())
+    currencies.append("USD")
+    if base not in currencies:
+        return {"error": f"Base currency '{base}' is not supported."}
+    for target_currency in target:
+        if target_currency not in currencies:
+            return {"error": f"Target currency '{target_currency}' is not supported."}
+
+    url = f"https://api.frankfurter.dev/v1/latest?base={base}&symbols=" + ",".join(
+        target
+    )
+    response = requests.get(url)
+    response.raise_for_status()
+    result = {}
+    for currency, value in response.json().get("rates", {}).items():
+        result[currency] = round(amount * value, 2)
+    return result
+
+
 agent = create_react_agent(
     model=llm,
     tools=[
@@ -251,10 +266,11 @@ agent = create_react_agent(
         list_files,
         delete_file,
         calculator,
-        web_search,
+        search_the_web,
         get_stock_price,
         get_news_headlines,
         get_weather,
+        currency_converter,
     ],
     prompt=(
         "You are a helpful, agentic AI assistant. When you use a tool, always include the tool's result in your final answer to the user. "
