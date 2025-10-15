@@ -51,6 +51,28 @@ npm run dev
 
 ---
 
+## Docker Compose (Recommended)
+
+To run the entire stack (Ollama, backend, frontend) with one command:
+
+```bash
+docker compose up -d
+```
+
+- Ollama (LLM server) runs on port 11434
+- Backend (FastAPI) runs on port 8000
+- Frontend (React) runs on port 5173
+
+You can stop all services with:
+
+```bash
+docker compose down
+```
+
+Make sure you have a `.env` file in the root directory with all required API keys before starting.
+
+---
+
 ## Usage
 
 - Chat with the assistant in the web UI.

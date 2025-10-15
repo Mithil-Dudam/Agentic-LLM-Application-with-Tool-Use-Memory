@@ -1,9 +1,6 @@
 fastapi
 uvicorn
-langchain
 langchain-ollama
-langchain-chroma
-langchain-community
 langgraph
 requests
 python-dotenv

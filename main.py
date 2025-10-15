@@ -26,7 +26,7 @@ app.add_middleware(
 )
 
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model="llama3.2", temperature=0, base_url="http://ollama:11434")
 
 
 class ChatRequest(BaseModel):

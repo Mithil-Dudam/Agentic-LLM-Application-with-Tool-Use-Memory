@@ -1,73 +1,54 @@
-# React + TypeScript + Vite
+# Agentic LLM Frontend (app_ui)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend for the Agentic LLM Application with Tool-Use & Memory. It is built with React, TypeScript, Vite, and Tailwind CSS, and provides a modern, mobile-friendly chat interface for interacting with the backend AI agent.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Clean chat UI with avatars for user and assistant
+- Markdown rendering (including code blocks)
+- Responsive/mobile-friendly design
+- Error handling for failed API calls
+- Supports structured JSON output from the backend
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Development
 
-## Expanding the ESLint configuration
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+   The app will be available at `http://localhost:5173` by default.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Production Build
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+To build the frontend for production:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The static files will be output to the `dist/` directory. In Docker Compose, these are served by Nginx.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Connecting to the Backend
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+The frontend expects the backend API to be available at `/chat` (proxied or CORS-enabled). When using Docker Compose, the frontend and backend are automatically networked together.
+
+## Project Structure
+
+- `src/` — Main React source code
+- `src/components/` — UI components (Avatar, MarkdownMessage, etc.)
+- `src/pages/` — Page components (Home, PageNotFound)
+- `public/` — Static assets
+
+## Customization
+
+You can modify the UI, add new features, or change the theme by editing the React components and Tailwind CSS classes in `src/`.
+
+---
+
+For more details, see the main project [README.md](../README.md).
