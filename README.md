@@ -63,6 +63,14 @@ docker compose up -d
 - Backend (FastAPI) runs on port 8000
 - Frontend (React) runs on port 5173
 
+**Important:** After starting the stack for the first time, you must pull the llama3.2 model into the Ollama container:
+
+```bash
+docker exec -it agentic-llm-application-with-tool-use-memory-ollama-1 ollama pull llama3.2
+```
+
+This only needs to be done once, unless you remove the Ollama volume.
+
 You can stop all services with:
 
 ```bash
