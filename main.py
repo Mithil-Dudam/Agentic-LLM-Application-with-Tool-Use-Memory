@@ -71,10 +71,8 @@ app.add_middleware(
 )
 
 
-# llm = ChatOllama(model="llama3.2", temperature=0, base_url="http://ollama:11434")
-# embeddings = OllamaEmbeddings(model="mxbai-embed-large", base_url="http://ollama:11434")
-llm = ChatOllama(model="llama3.2", temperature=0)
-embeddings = OllamaEmbeddings(model="mxbai-embed-large")
+llm = ChatOllama(model="llama3.2", temperature=0, base_url="http://ollama:11434")
+embeddings = OllamaEmbeddings(model="mxbai-embed-large", base_url="http://ollama:11434")
 
 
 class ChatRequest(BaseModel):

@@ -31,3 +31,6 @@ Thumbs.db
 *.swp
 *.bak
 *.tmp
+
+# Data folder
+data/
