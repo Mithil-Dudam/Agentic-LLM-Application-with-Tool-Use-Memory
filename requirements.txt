@@ -1,6 +1,10 @@
 fastapi
 uvicorn
 langchain-ollama
+langchain_chroma
 langgraph
 requests
 python-dotenv
+spacy
+scikit-learn
+pandas
