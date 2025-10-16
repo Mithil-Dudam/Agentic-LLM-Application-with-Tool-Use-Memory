@@ -8,3 +8,6 @@ python-dotenv
 spacy
 scikit-learn
 pandas
+python-multipart
+pypdf
+rank_bm25
