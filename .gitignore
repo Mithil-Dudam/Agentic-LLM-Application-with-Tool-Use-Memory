@@ -15,7 +15,7 @@ app_ui/node_modules/
 # Build
 app_ui/dist/
 app_ui/.next/
-app_ui/.turbo/
+.venv/
 
 # Logs
 *.log
