@@ -1,4 +1,4 @@
-# Agentic LLM Application with Tool-Use & Memory
+# Agentic LLM Application with Tool-Use, Memory, and RAG Integration
 
 A full-stack AI assistant featuring advanced tool-use, in-session memory, document retrieval (RAG), and a modern React/Tailwind UI. Built for robust, real-world agentic scenarios.
 
